@@ -170,7 +170,7 @@ function App() {
   }, [searchTerm]);
 
   const getLeads = async () => {
-    return;
+    // return;
     setGettingLeads(true);
 
     const res = await fetch("/api/lead/get-leads");

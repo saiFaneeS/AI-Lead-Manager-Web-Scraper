@@ -205,12 +205,12 @@ const getLinks = async (textArray: string[]) => {
     let extractedData;
     try {
       extractedData = JSON.parse(result);
-    } catch (err) {
+    } catch {
       return null;
     }
 
     let websites = extractedData.websites || [];
-    let social_links = extractedData.social_links || [];
+    const social_links = extractedData.social_links || [];
 
     websites = websites.map((url: string) =>
       url.startsWith("http") ? url : `https://${url}`
@@ -232,7 +232,7 @@ const scrapeAllWebsites = async (websites: string[]) => {
   const results = await Promise.allSettled(websites.map(scrapeWebsite));
   return results
     .filter((res) => res.status === "fulfilled")
-    .map((res) => (res as PromiseFulfilledResult<any>).value);
+    .map((res) => (res).value);
 };
 
 const storeLead = async (
@@ -244,7 +244,7 @@ const storeLead = async (
   allWebsites: string[],
   allSocialLinks: string[],
   allEmails: string[]
-): Promise<any> => {
+) => {
   try {
     try {
       const scrapedResults = await scrapeAllWebsites(allWebsites);
@@ -429,7 +429,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
       let allWebsites: string[] = [];
       let allSocialLinks: string[] = [];
-      let allEmails: string[] = [];
+      const allEmails: string[] = [];
 
       if (extractedURLs) {
         allWebsites = [...new Set([...allWebsites, ...extractedURLs.websites])]

@@ -200,7 +200,7 @@ function App() {
 
   // MAIN FUNCTION TO BRING NEW LEADS
   const filterAndStoreNewLeads = async () => {
-    return;
+    // return;
     if (isFetchingRef.current) return;
     isFetchingRef.current = true;
 

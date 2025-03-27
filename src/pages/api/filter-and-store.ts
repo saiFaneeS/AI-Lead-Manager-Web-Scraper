@@ -25,25 +25,34 @@ const blockedURLS = [
   "hostinger.com",
   "squarespace.com",
   "wordpress.org",
+  "woocommerce.com",
   "wix.com",
+  "www.wordpress.org",
+  "www.wix.com",
   "netlify.com",
   "render.com",
   "builder.io",
+  "magento.com",
 
   // Social Media & Messaging
   "x.com",
   "twitter.com",
-  "facebook.com",
-  "instagram.com",
-  "linkedin.com",
+  // "facebook.com",
+  // "youtube.com",
+  // "instagram.com",
+  // "linkedin.com",
+  // "www.facebook.com",
+  // "www.youtube.com",
+  // "www.instagram.com",
+  // "www.linkedin.com",
+  // "tiktok.com",
+  // "whatsapp.com",
   "pinterest.com",
   "snapchat.com",
-  "tiktok.com",
   "telegram.me",
   "t.me",
   "discord.com",
   "threads.net",
-  "whatsapp.com",
   "reddit.com",
 
   // Finance & Payment Platforms
@@ -85,6 +94,7 @@ const blockedURLS = [
   "amazon.com",
   "ebay.com",
   "shopify.com",
+  "www.shopify.com",
   "walmart.com",
   "etsy.com",
   "rakuten.com",
@@ -132,12 +142,16 @@ const blockedURLS = [
   // Automation & Integration
   "make.com",
   "zapier.com",
+  "monday.com",
 
   // Job Platforms
   "upwork.com",
   "freelancer.com",
   "fiverr.com",
-  "linkedin.com/jobs",
+  "www.upwork.com",
+  "www.freelancer.com",
+  "www.fiverr.com",
+  "linkedin.com",
   "indeed.com",
   "monster.com",
   "glassdoor.com",
@@ -232,7 +246,7 @@ const scrapeAllWebsites = async (websites: string[]) => {
   const results = await Promise.allSettled(websites.map(scrapeWebsite));
   return results
     .filter((res) => res.status === "fulfilled")
-    .map((res) => (res).value);
+    .map((res) => res.value);
 };
 
 const storeLead = async (
@@ -394,9 +408,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { data } = await axios.get(RSS_FEED);
 
-    //   const data = `<rss version="2.0"><channel><title>Upwork Job Feed RSS</title><link>https://farazthewebguy.com</link> <description>RSS feed for Upwork Jobs</description><item>
+    // const data = `<rss version="2.0"><channel><title>Upwork Job Feed RSS</title><link>https://farazthewebguy.com</link> <description>RSS feed for Upwork Jobs</description><item>
     //   <title>Wesbite SEO optimisation and social media</title>
-    //   <link>https://www.upwork.com/jobs/Logo-designer_~021899751asfas9616d923225998/?referrer_url_path=/nx/search/jobs/</link> <description> Hi, We are looking for develpoer who can work and collaborate on website work at our website saifanees.vercel.app, We want to add more sections, work on about page and fix bugs while adjusting the layout. we would like you to look at some sites we like to see how we can imrove our own. awwwards.com clutch.co duck.design thriveagency.com We need and are actively looking for someone with great portfolio!. </description>
+    //   <link>https://www.upwork.com/jobs/Logo-designer_~021899751asfas9616d923225998/?referrer_url_path=/nx/search/jobs/</link> <description> I have a hair salon in Plano, Texas. I would like my website revamped and look ultra professional for high-end women who want the best hairstyles available. My current site is www.blondiestexas.com ... I would love your opinion and an approximate cost.</description>
     //   </item></channel></rss> `;
 
     const items = data.toLowerCase().match(/<item>[\s\S]*?<\/item>/g) || [];

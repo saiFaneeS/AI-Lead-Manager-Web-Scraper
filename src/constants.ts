@@ -1,4 +1,4 @@
-export const sessionTime = 20 * 60;
+export const sessionTime = 15 * 60;
 export const maxLeads = 100;
 
 export const modelKeywordFinder = "llama-3.1-8b-instant";

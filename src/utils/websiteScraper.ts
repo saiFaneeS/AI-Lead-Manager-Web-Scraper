@@ -95,14 +95,12 @@ async function scrapePage(url: string): Promise<ScrapedData> {
     // 3️⃣ social links
     $("a, span, p, div").each((_, element) => {
       const href = $(element).attr("href")?.toLowerCase().trim() || "";
-
       if (isSpecificSocialLink(href)) {
         results.social_links.push(
           href.startsWith("http") ? href : `https://${href.replace(/^\/+/, "")}`
         );
       }
     });
-
     return results;
   } catch (error) {
     console.error(`!! Failed to scrape ${url}:`, (error as Error).message);
@@ -151,8 +149,13 @@ async function findRelevantPages(url: string): Promise<string[]> {
 }
 
 // Social Link Helper
-const genericSocialDomains = ["zoho.com"];
-
+const genericSocialDomains = [
+  "instagram.com",
+  "facebook.com",
+  "linkedin.com",
+  "tiktok.com",
+  "threads.net",
+];
 const isSpecificSocialLink = (url: string) => {
   const normalizedUrl = url.toLowerCase().replace(/^https?:\/\/(www\.)?/, "");
   return genericSocialDomains.some((domain) =>

@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import axios from "axios";
 import { EMAIL_USER, modelJobScraper, RSS_FEED } from "@/constants";
 import { groq } from "@/utils/groqClient";
+import { blockedURLS } from "@/utils/blockedUrls";
 
 const logArray: string[] = [];
 
@@ -17,146 +18,6 @@ const normalizeUrlForComparison = (url: string) => {
     .replace(/^www\./, "")
     .toLowerCase();
 };
-
-const blockedURLS = [
-  // Web Hosting & CMS
-  "square.com",
-  "rocket.net",
-  "hostinger.com",
-  "squarespace.com",
-  "wordpress.org",
-  "woocommerce.com",
-  "wix.com",
-  "www.wordpress.org",
-  "www.wix.com",
-  "netlify.com",
-  "render.com",
-  "builder.io",
-  "magento.com",
-
-  // Social Media & Messaging
-  "x.com",
-  "twitter.com",
-  // "facebook.com",
-  // "youtube.com",
-  // "instagram.com",
-  // "linkedin.com",
-  // "www.facebook.com",
-  // "www.youtube.com",
-  // "www.instagram.com",
-  // "www.linkedin.com",
-  // "tiktok.com",
-  // "whatsapp.com",
-  "pinterest.com",
-  "snapchat.com",
-  "telegram.me",
-  "t.me",
-  "discord.com",
-  "threads.net",
-  "reddit.com",
-
-  // Finance & Payment Platforms
-  "robinhood.com",
-  "paypal.com",
-  "stripe.com",
-  "coinbase.com",
-  "blockchain.com",
-  "venmo.com",
-  "zelle.com",
-  "squareup.com",
-  "cash.app",
-
-  // Crypto & Web3
-  "web3.js",
-  "etherscan.io",
-  "opensea.io",
-  "metamask.io",
-  "trustwallet.com",
-  "cryptocompare.com",
-  "binance.com",
-
-  // Business & Marketing Tools
-  "hubspot.com",
-  "salesforce.com",
-  "activecampaign.com",
-  "mailchimp.com",
-  "klaviyo.com",
-  "customer.io",
-  "aloware.com",
-  "apollo.io",
-  "zoho.com",
-  "expensify.com",
-  "dribbble.com",
-  "frame.io",
-  "framer.com",
-
-  // E-Commerce & Marketplaces
-  "amazon.com",
-  "ebay.com",
-  "shopify.com",
-  "www.shopify.com",
-  "walmart.com",
-  "etsy.com",
-  "rakuten.com",
-  "bestbuy.com",
-  "target.com",
-  "booking.com",
-
-  // Software Development & Tech
-  "github.com",
-  "gitlab.com",
-  "bitbucket.org",
-  "node.js",
-  "react.js",
-  "next.js",
-  "vue.js",
-  "nest.js",
-  "nuxt.js",
-  "asp.net",
-  "dribbble.com",
-
-  // Media, Blogs & Publishing
-  "medium.com",
-  "forbes.com",
-  "scribd.com",
-  "goodreads.com",
-  "speedtest.net",
-
-  // Email Providers
-  "gmail.com",
-  "outlook.com",
-  "hotmail.com",
-  "yahoo.com",
-  "icloud.com",
-  "protonmail.com",
-  "zoho.com",
-  "aol.com",
-
-  // URL Shorteners
-  "bit.ly",
-  "tinyurl.com",
-  "t.co",
-  "shorturl.at",
-  "cutt.ly",
-
-  // Automation & Integration
-  "make.com",
-  "zapier.com",
-  "monday.com",
-
-  // Job Platforms
-  "upwork.com",
-  "freelancer.com",
-  "fiverr.com",
-  "www.upwork.com",
-  "www.freelancer.com",
-  "www.fiverr.com",
-  "linkedin.com",
-  "indeed.com",
-  "monster.com",
-  "glassdoor.com",
-].map((domain) => normalizeUrlForComparison(domain));
-
 const formatUrl = (url: string): string => {
   if (!/^https?:\/\//i.test(url)) {
     url = `https://${url}`;
@@ -169,13 +30,13 @@ const formatUrl = (url: string): string => {
 
   return url.replace(/^https?:\/\//i, "https://").replace(/^www\./i, "");
 };
-
 const isValidWebsite = (url: string) => {
   const normalized = normalizeUrlForComparison(url);
 
   if (
     blockedURLS.some(
-      (blocked) => normalized === blocked || normalized.endsWith(`.${blocked}`)
+      (blocked) =>
+        normalized === blocked || normalized.startsWith(`${blocked}/`)
     )
   ) {
     console.log(`Blocked URL: ${url}`);
@@ -191,15 +52,16 @@ const getLinks = async (textArray: string[]) => {
   try {
     const prompt = `
     - Extract only employer or company links from the text.
-    - ❌ IGNORE reference links, competitor brands, inspirational designs and websites to clone. 
-    - ❌ IGNORE if the link if the person is out-sourcing work e.g: looking for freelancer to help our clients work 'somecompany'. 
+    - ❌ IGNORE references or links for inspiration purposes, competitor brands, and websites to clone. 
+    - ❌ IGNORE links that are mentioned with phrases like "similar to", "like", "inspired by", "reference", or "example".
+    - ❌ IGNORE if the link is for outsourcing work, e.g., looking for a freelancer to help our clients work 'somecompany'. 
     - ✅ If the employer states their own company site or social, extract it.
 
     - Return JSON: {"websites":[], "social_links":[]}.
 
     Input:
     ${textArray.join("\n\n")}
-`;
+  `; 
 
     const response = await groq.chat.completions.create({
       messages: [{ role: "user", content: prompt }],
@@ -356,6 +218,12 @@ const storeLead = async (
       return;
     }
 
+    if (allEmails.length === 0 && allSocialLinks.length === 0) {
+      console.log(`${i}) No emails or socials:`, title + `\n`);
+      logArray.push(`!! No emails or socials: ${title}`);
+      return;
+    }
+
     const { error: insertError } = await supabase
       .from("leads")
       .insert([
@@ -410,7 +278,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     // const data = `<rss version="2.0"><channel><title>Upwork Job Feed RSS</title><link>https://farazthewebguy.com</link> <description>RSS feed for Upwork Jobs</description><item>
     //   <title>Wesbite SEO optimisation and social media</title>
-    //   <link>https://www.upwork.com/jobs/Logo-designer_~021899751asfas9616d923225998/?referrer_url_path=/nx/search/jobs/</link> <description> I have a hair salon in Plano, Texas. I would like my website revamped and look ultra professional for high-end women who want the best hairstyles available. My current site is www.blondiestexas.com ... I would love your opinion and an approximate cost.</description>
+    //   <link>https://www.upwork.com/jobs/Logo-designer_~021899751asfas9616d923225998/?referrer_url_path=/nx/search/jobs/</link> <description> I have a hair salon in Plano, Texas. I would like my website revamped and look ultra professional for high-end women who want the best hairstyles available. My current site is saifanees.vercel.app ... I would love your opinion and an approximate cost.</description>
     //   </item></channel></rss> `;
 
     const items = data.toLowerCase().match(/<item>[\s\S]*?<\/item>/g) || [];

@@ -1,0 +1,130 @@
+export const blockedURLS = [
+  // Web Hosting & CMS
+  "square.com",
+  "rocket.net",
+  "hostinger.com",
+  "squarespace.com",
+  "wordpress.org",
+  "woocommerce.com",
+  "wix.com",
+  "www.wordpress.org",
+  "www.wix.com",
+  "netlify.com",
+  "render.com",
+  "builder.io",
+  "magento.com",
+
+  // Social Media & Messaging
+  "x.com",
+  "twitter.com",
+  "facebook.com",
+  "youtube.com",
+  "instagram.com",
+  "linkedin.com",
+  "tiktok.com",
+  "whatsapp.com",
+  "pinterest.com",
+  "snapchat.com",
+  "telegram.me",
+  "t.me",
+  "discord.com",
+  "threads.net",
+  "reddit.com",
+
+  // Finance & Payment Platforms
+  "robinhood.com",
+  "paypal.com",
+  "stripe.com",
+  "coinbase.com",
+  "blockchain.com",
+  "venmo.com",
+  "zelle.com",
+  "squareup.com",
+  "cash.app",
+
+  // Crypto & Web3
+  "web3.js",
+  "etherscan.io",
+  "opensea.io",
+  "metamask.io",
+  "trustwallet.com",
+  "cryptocompare.com",
+  "binance.com",
+
+  // Business & Marketing Tools
+  "hubspot.com",
+  "salesforce.com",
+  "activecampaign.com",
+  "mailchimp.com",
+  "klaviyo.com",
+  "customer.io",
+  "aloware.com",
+  "apollo.io",
+  "zoho.com",
+  "expensify.com",
+  "dribbble.com",
+  "frame.io",
+  "framer.com",
+
+  // E-Commerce & Marketplaces
+  "amazon.com",
+  "ebay.com",
+  "shopify.com",
+  "walmart.com",
+  "etsy.com",
+  "rakuten.com",
+  "bestbuy.com",
+  "target.com",
+  "booking.com",
+
+  // Software Development & Tech
+  "github.com",
+  "gitlab.com",
+  "bitbucket.org",
+  "node.js",
+  "react.js",
+  "next.js",
+  "vue.js",
+  "nest.js",
+  "nuxt.js",
+  "asp.net",
+  "dribbble.com",
+
+  // Media, Blogs & Publishing
+  "medium.com",
+  "forbes.com",
+  "scribd.com",
+  "goodreads.com",
+  "speedtest.net",
+
+  // Email Providers
+  "gmail.com",
+  "outlook.com",
+  "hotmail.com",
+  "yahoo.com",
+  "icloud.com",
+  "protonmail.com",
+  "zoho.com",
+  "aol.com",
+
+  // URL Shorteners
+  "bit.ly",
+  "tinyurl.com",
+  "t.co",
+  "shorturl.at",
+  "cutt.ly",
+
+  // Automation & Integration
+  "make.com",
+  "zapier.com",
+  "monday.com",
+
+  // Job Platforms
+  "upwork.com",
+  "freelancer.com",
+  "fiverr.com",
+  "linkedin.com",
+  "indeed.com",
+  "monster.com",
+  "glassdoor.com",
+];

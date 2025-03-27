@@ -100,7 +100,7 @@ export function LeadTable({
     select: true,
     jobTitle: true,
     keywords: false,
-    social: false,
+    social: true,
     websites: false,
     emails: true,
     actions: true,
